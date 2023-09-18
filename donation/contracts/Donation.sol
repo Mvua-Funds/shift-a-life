@@ -20,7 +20,12 @@ struct Donation {
 
 struct Campaign {
     uint256 id;
-    string name;
+    string title;
+    string cause;
+    string image;
+    string description;
+    string start_date;
+    string end_date;
     address donation_token;
     uint256 total;
     uint256 donations_count;
@@ -35,7 +40,7 @@ struct Campaign {
 
 struct ReturnCampaign {
     uint256 id;
-    string name;
+    string title;
     address donation_token;
     uint256 total;
     uint256 donations_count;
@@ -54,6 +59,7 @@ contract Contract {
     bool public running;
     string[] private causes;
     mapping(uint256 => Campaign) private campaigns;
+    mapping(address => uint256[]) private my_campaigns;
     mapping(uint256 => Donation[]) private campaignDonations;
 
     string[] private tokens;
@@ -70,6 +76,7 @@ contract Contract {
     uint64 public partners_count;
 
     uint256 private donationsPerPage = 10;
+    uint256 private campaignsPerPage = 20;
 
     constructor() {
         guardians.push(msg.sender);
@@ -83,6 +90,15 @@ contract Contract {
 
     function getTokens() public view returns (string[] memory) {
         return tokens;
+    }
+
+    function addCause(string memory cause) public {
+        causes.push(cause);
+        causes_count++;
+    }
+
+    function getCauses() public view returns (string[] memory) {
+        return causes;
     }
 
     function getDonationsStats() public view returns (ContractStats memory) {
@@ -109,20 +125,32 @@ contract Contract {
     }
 
     function createCampaign(
-        string memory name,
+        string memory title,
         address donation_token,
-        uint256 target
+        uint256 target,
+        string memory cause,
+        string memory description,
+        string memory image,
+        string memory start_date,
+        string memory end_date
     ) public {
         campaigns_count++;
         Campaign storage newCampaign = campaigns[campaigns_count];
         newCampaign.id = campaigns_count;
-        newCampaign.name = name;
+        newCampaign.title = title;
         newCampaign.donation_token = donation_token;
+        newCampaign.cause = cause;
+        newCampaign.image = image;
+        newCampaign.start_date = start_date;
+        newCampaign.end_date = end_date;
+        newCampaign.description = description;
         newCampaign.total = 0;
         newCampaign.donations_count = 0;
         newCampaign.voters_count = 0;
         newCampaign.partners_count = 0;
         newCampaign.target = target;
+
+        my_campaigns[msg.sender].push(campaigns_count);
 
         // Initialize voters
         // for (uint256 i = 0; i < initialVoters.length; i++) {
@@ -139,7 +167,7 @@ contract Contract {
         Campaign storage camp = campaigns[id];
         ReturnCampaign memory return_camp = ReturnCampaign(
             camp.id,
-            camp.name,
+            camp.title,
             camp.donation_token,
             camp.total,
             camp.donations_count,
@@ -209,6 +237,40 @@ contract Contract {
 
         for (uint256 i = start; i < end; i++) {
             result[i - start] = campaignDonations[campaignId][i];
+        }
+
+        return result;
+    }
+
+    function getCampaigns(
+        uint256 page
+    ) public view returns (ReturnCampaign[] memory) {
+        uint256 start = campaignsPerPage * (page - 1);
+        uint256 end = start + campaignsPerPage;
+        uint256 totalCampaigns = campaigns_count;
+
+        if (start >= totalCampaigns) {
+            return new ReturnCampaign[](0);
+        }
+
+        if (end > totalCampaigns) {
+            end = totalCampaigns;
+        }
+
+        ReturnCampaign[] memory result = new ReturnCampaign[](end - start);
+
+        for (uint256 i = start; i < end; i++) {
+            // result[i - start] = campaignDonations[campaignId][i];
+            Campaign storage camp = campaigns[i];
+            ReturnCampaign memory return_camp = ReturnCampaign(
+            camp.id,
+            camp.title,
+            camp.donation_token,
+            camp.total,
+            camp.donations_count,
+            camp.target
+        );
+            result [i-start] = return_camp;
         }
 
         return result;

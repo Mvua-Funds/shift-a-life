@@ -19,11 +19,12 @@ import {
 import CustomLinkComponent from '../components/common/CustomNavlink';
 import { getTheme } from '../configs/appfunctions';
 import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
-import { connectWallet, disconnectWallet } from '../configs/near/utils';
+import { disconnectWallet } from '../configs/near/utils';
 import CreateDropdown from '../components/common/CreateDropdown';
 import Footer from '../components/common/Footer';
 import { APP_NAME } from '../configs/appconfig';
 import { Link } from 'react-router-dom';
+import { connectWallet } from '../utils/config';
 
 const navlinks = [
     { to: "/", label: "Home" },

@@ -9,7 +9,7 @@ import reportWebVitals from "./reportWebVitals";
 import * as buffer from "buffer"
 
 declare global {
-  interface Window { nearInitPromise: any; walletConnection: any, contract: any}
+  interface Window { nearInitPromise: any; walletConnection: any, contract: any, ethereum: any}
 }
 
 window.Buffer = buffer.Buffer;

@@ -9,6 +9,7 @@ import CampaignCard from '../../components/activities/CampaignCard';
 import { ShiftALifeViewFunctionCall } from '../../configs/nearutils';
 import { useScrollIntoView } from '@mantine/hooks';
 import { Link } from 'react-router-dom';
+import { contract } from '../../utils/config.js';
 
 
 const Campaigns = () => {
@@ -23,27 +24,13 @@ const Campaigns = () => {
   const { classes, theme } = bodyStyles()
   const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({ offset: 120 });
  
-  const getCampaigns = () => {
-    const wallet = window.walletConnection
-    if (wallet) {
-      ShiftALifeViewFunctionCall(wallet, {
-        methodName: 'get_campaigns',
-        args: { page: page, limit: limit }
-      }).then((res: any) => {
-        const campaigns_ = campaigns
-        const results: any = res?.results
-        const merged = campaigns_.concat(results).filter((obj: any, index: any, self: any) =>
-          index === self.findIndex((obj2: any) => (
-            obj.id === obj2.id
-          ))
-        );
-        setCampaigns(merged)
-        setCount(res?.count)
-      }).catch((e: any) => {
-        console.error("Error: ", e)
-      })
-    }
+  const getCampaigns = async () => {
+    console.log(contract)
+    const res = await contract?.methods?.getCampaigns(1).call()
+    console.log(res)
   }
+
+
 
   const wait = useMemo(() => {
     return {
