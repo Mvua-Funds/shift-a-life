@@ -4,12 +4,11 @@ import { DatePicker } from '@mantine/dates';
 
 import { IconSpeakerphone } from '@tabler/icons';
 import { Helmet } from 'react-helmet';
-import { SEPARATOR, APP_NAME, NEAR_OBJECT } from '../../configs/appconfig';
+import { SEPARATOR, APP_NAME } from '../../configs/appconfig';
 import { useForm } from '@mantine/form';
 import { useState } from 'react';
 import { nanoid } from 'nanoid';
 import SelectTokenModal from '../../components/common/SelectTokenModal';
-import { getCauses, connectWallet } from '../../configs/near/utils';
 import { useEffect } from 'react';
 import { contract } from '../../utils/config';
 
@@ -25,7 +24,7 @@ const CreateCampaign = () => {
   const [loading, setLoading] = useState(false)
   const [causes, setCauses] = useState<null | any>([])
   const [openModal, setOpenModal] = useState(false)
-  const [selectedToken, setSelectedToken] = useState(NEAR_OBJECT)
+  const [selectedToken, setSelectedToken] = useState(null)
 
   const [uploading, setUploading] = useState(false)
   const [img, setImg] = useState<any>(null)
@@ -34,9 +33,7 @@ const CreateCampaign = () => {
   const navigate = useNavigate()
 
   const loadCauses = () => {
-    getCauses().then((res: any) => {
-      setCauses(res)
-    }).catch((err: any) => { })
+   
   }
 
   const form = useForm({
@@ -58,7 +55,7 @@ const CreateCampaign = () => {
     }
   })
 
-  const UploadImage = (file: any) => {
+  const UploadImage = (file) => {
     setUploading(true)
     const imageRef = ref(storage, `images/${file['name'] + v4()}`);
     uploadBytes(imageRef, file).then((snapshot) => {
@@ -76,7 +73,7 @@ const CreateCampaign = () => {
 
   const handleSubmit = async () => {
 
-    const accounts = await window.ethereum?.request({ method: "eth_requestAccounts" });
+    const accounts = await window?.ethereum?.request({ method: "eth_requestAccounts" });
     const account = accounts[0];
 
     const id = nanoid() + Date.now()
@@ -93,7 +90,7 @@ const CreateCampaign = () => {
 
   }
 
-  const isSignedIn = window?.walletConnection?.isSignedIn()
+  const isSignedIn = true
 
   useEffect(() => {
     // loadCauses()
@@ -126,7 +123,7 @@ const CreateCampaign = () => {
               <form onSubmit={form.onSubmit((values) => handleSubmit())}>
                 <Stack>
                   <TextInput label="Title" placeholder='Campaign title' radius="md"{...form.getInputProps('title')} />
-                  <Select label="Select cause" placeholder='Cause of the campaign' radius="md" data={causes.map((cause: any) => ({ value: cause?.title, label: cause?.title }))}
+                  <Select label="Select cause" placeholder='Cause of the campaign' radius="md" data={causes.map((cause) => ({ value: cause?.title, label: cause?.title }))}
                     {...form.getInputProps('cause')} />
                   <Textarea minRows={5} placeholder="Describe the campaign" label="Description" radius="md"{...form.getInputProps('description')} />
                   <Grid>

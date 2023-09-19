@@ -21,13 +21,13 @@ const Campaigns = () => {
   const no_of_pages = Math.ceil(count / limit)
 
   const { classes, theme } = bodyStyles()
-  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({ offset: 120 });
+  const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 120 });
 
   const getCampaigns = () => {
     console.log(contract)
-    contract?.methods?.getCampaigns(1).call().then((res: any) => {
+    contract?.methods?.getCampaigns(1).call().then((res) => {
       console.info("Result: ", res)
-    }).catch((err: any) => {
+    }).catch((err) => {
       console.error("Error: ", err)
     })
   }
@@ -107,7 +107,7 @@ const Campaigns = () => {
         </Group>
         <Grid my="md" ref={targetRef}>
           {
-            campaigns.map((c: any, i: any) => (
+            campaigns.map((c, i) => (
               <Grid.Col md={3} key={`ds_campaign_${c.id}`}>
                 <CampaignCard details={c} />
               </Grid.Col>
