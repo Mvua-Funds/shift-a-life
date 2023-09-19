@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, Grid, Select, Stack, TextInput, Title, useMantineTheme, Paper, Textarea, Group, Button, LoadingOverlay } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 
-import { IconSpeakerphone } from '@tabler/icons';
+import { IconAlertCircle, IconAlertTriangle, IconSpeakerphone, IconTriangle } from '@tabler/icons';
 import { Helmet } from 'react-helmet';
 import { SEPARATOR, APP_NAME } from '../../configs/appconfig';
 import { useForm } from '@mantine/form';
@@ -17,6 +17,7 @@ import { v4 } from 'uuid';
 import { storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useNavigate } from 'react-router-dom';
+import { showNotification } from '@mantine/notifications';
 
 
 const CreateCampaign = () => {
@@ -33,7 +34,9 @@ const CreateCampaign = () => {
   const navigate = useNavigate()
 
   const loadCauses = () => {
-
+    contract?.methods?.getCauses().call().then(res => {
+      setCauses(res)
+    }).catch(e => { })
   }
 
   const form = useForm({
@@ -82,14 +85,27 @@ const CreateCampaign = () => {
       start_date: form.values.start_date?.toLocaleDateString(),
       end_date: form.values.end_date?.toLocaleDateString(),
     }
-
-    await contract?.methods?.createCampaign(data?.title, data?.token, data?.target.toString(), data?.cause,
+    console.log(data)
+    setLoading(true)
+    contract?.methods?.createCampaign(
+      data?.title, data?.token, data?.target.toString(), data?.cause,
       data?.description, data?.image, data?.start_date,
       data?.end_date)
-      .send({ from: account }).then((data) => {
-        console.info("Result", data)
+      .send({ from: account, gas: 2000000 }).then((data) => {
+        form.reset()
+        showNotification({
+          message: "Adding new Campaign succeeded!",
+          color: "green",
+          icon: <IconAlertCircle />
+        })
       }).catch((e) => {
-        console.error("Error: ", e)
+        showNotification({
+          message: "Adding new Campaign failed",
+          color: "red",
+          icon: <IconAlertTriangle />
+        })
+      }).finally(() => {
+        setLoading(false)
       })
 
   }
@@ -97,7 +113,7 @@ const CreateCampaign = () => {
   const isSignedIn = true
 
   useEffect(() => {
-    // loadCauses()
+    loadCauses()
   }, [])
 
   // const waitChange = useMemo(() => {
@@ -127,7 +143,7 @@ const CreateCampaign = () => {
               <form onSubmit={form.onSubmit((values) => handleSubmit())}>
                 <Stack>
                   <TextInput label="Title" placeholder='Campaign title' radius="md"{...form.getInputProps('title')} />
-                  <Select label="Select cause" placeholder='Cause of the campaign' radius="md" data={causes.map((cause) => ({ value: cause?.title, label: cause?.title }))}
+                  <Select label="Select cause" placeholder='Cause of the campaign' radius="md" data={causes.map((cause) => ({ value: cause, label: cause }))}
                     {...form.getInputProps('cause')} />
                   <Textarea minRows={5} placeholder="Describe the campaign" label="Description" radius="md"{...form.getInputProps('description')} />
                   <Grid>

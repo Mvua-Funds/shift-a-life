@@ -26,7 +26,7 @@ const Campaigns = () => {
   const getCampaigns = () => {
     console.log(contract)
     contract?.methods?.getCampaigns(1).call().then((res) => {
-      console.info("Result: ", res)
+      setCampaigns(res)
     }).catch((err) => {
       console.error("Error: ", err)
     })
@@ -58,13 +58,6 @@ const Campaigns = () => {
               left: 0,
             }}>
               <Stack>
-                {
-                  getTheme(theme) ? (
-                    <Image src='/near/no_margin/built-rev_nomargin.png' width="150px" />
-                  ) : (
-                    <Image src='/near/no_margin/built_nomargin.png' width="150px" />
-                  )
-                }
                 <Title className={classes.title}>Campaigns</Title>
                 <Text className={classes.text}>
                   Campaigns are long term activities that we carry out in relation to making donations to help <span className={classes.bold}>Shift a Life</span> of somebody or a community.
@@ -123,4 +116,3 @@ const Campaigns = () => {
 }
 
 export default Campaigns
-

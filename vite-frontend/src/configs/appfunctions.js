@@ -1,4 +1,4 @@
-
+import { BigNumber } from "bignumber.js"
 
 export const getTheme = (theme) => {
     return theme.colorScheme === "dark"
@@ -27,4 +27,25 @@ export const limitChars = (word, limit) => {
         return word;
     }
     return word?.substring(0, limit) + "...";
+}
+
+export function createObject(keys, values) {
+    if (keys.length !== values.length) {
+        throw new Error('Keys and values arrays must have the same length');
+    }
+
+    const result = {};
+
+    for (let i = 0; i < keys.length; i++) {
+        const key = keys[i];
+        const value = values[i];
+        result[key] = value;
+    }
+
+    return result;
+}
+
+
+export const getReadableTokenBalance = (tokenBalance, decimals) => {
+    return new BigNumber(tokenBalance).dividedBy(10 ** decimals).toFixed(2)
 }

@@ -1,9 +1,9 @@
 import { ActionIcon, Avatar, Box, Button, Center, ColorSwatch, Container, Grid, Group, Loader, LoadingOverlay, Paper, RingProgress, ScrollArea, Stack, Table, Text, TextInput, Title, Tooltip } from '@mantine/core';
 import React, { useEffect, useMemo, useState } from 'react'
 import { Helmet } from 'react-helmet';
-import { SEPARATOR, APP_NAME } from '../../configs/appconfig';
+import { SEPARATOR, APP_NAME, campaign_keys } from '../../configs/appconfig';
 import bodyStyles from '../../components/styles/bodyStyles';
-import { getTheme, getTimezone } from '../../configs/appfunctions';
+import { createObject, getReadableTokenBalance, getTheme, getTimezone } from '../../configs/appfunctions';
 import { IconCalendar, IconCashBanknote, IconChevronDown, IconCoin, IconX } from '@tabler/icons';
 import { useParams } from 'react-router-dom';
 import SelectTokenModal from '../../components/common/SelectTokenModal';
@@ -12,27 +12,33 @@ import { showNotification } from '@mantine/notifications';
 import CampaignDonations from '../../components/activities/CampaignDonations';
 import BecomePartnerModal from '../../components/common/BecomePartnerModal';
 import DonDetails from '../../components/activities/DonDetails';
+import { contract } from '../../utils/config';
 
 const SingleCampaign = () => {
 
-  const [data, setData] = useState < null | any > (null)
-  const [tokenDetails, setTokenDetails] = useState < null | any > (null)
+  const [data, setData] = useState(null)
+  const [tokenDetails, setTokenDetails] = useState(null)
   const [loading, setLoading] = useState(false)
   const [voting, setVoting] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const [amt, setAmt] = useState("")
   const [tokenPrice, setTokenPrice] = useState(0)
+  const [partners, setPartners] = useState([])
 
   const { theme, classes } = bodyStyles()
   const modals = useModals()
-  const { eid } = useParams()
+  const { cid } = useParams()
 
   const amIaVoter = (voter) => {
-    return data?.voters.some((x) => x === voter);
+    return data?.voters?.some((x) => x === voter);
   }
 
-  const getEvent = () => {
-
+  const getCampaign = () => {
+    contract?.methods.getCampaign(cid).call().then(res => {
+      setData(res)
+    }).catch(e => {
+      console.log(e)
+    })
   }
 
   const getTokenMetadata = () => {
@@ -103,27 +109,27 @@ const SingleCampaign = () => {
 
   const call_cid = useMemo(() => {
     return {
-      eid: eid
+      cid: cid
     }
-  }, [eid])
+  }, [cid])
 
   useEffect(() => {
-    getEvent()
+    getCampaign()
   }, [call_cid])
 
   return (
     <>
       <Helmet>
-        <title>{`${data?.title || ""}`}  {SEPARATOR} Event  {SEPARATOR} {APP_NAME}</title>
+        <title> {`${APP_NAME} ${SEPARATOR} Campaign  ${SEPARATOR} ${data?.title ?? ""}`} </title>
       </Helmet>
-      <SelectTokenModal select={setSelectedToken} open={openModal} closeModal={() => setOpenModal(false)} selectedToken={selectedToken} />
+      {/* <SelectTokenModal select={setSelectedToken} open={openModal} closeModal={() => setOpenModal(false)} selectedToken={selectedToken} /> */}
       <Container size="lg" py="xl" sx={{ paddingBottom: "60px", position: "relative" }}>
         <LoadingOverlay visible={loading} />
         <Grid>
           <Grid.Col md={7}>
             <Box>
               <Title order={1} className={classes.subtitle} mb="xl">{data?.title}</Title>
-              <img loading='lazy' src={data?.img !== "someimageurl" ? data?.img : "https://images.unsplash.com/photo-1420593248178-d88870618ca0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Z3JlZW4lMjBmb3Jlc3R8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"}
+              <img loading='lazy' src={data?.img ? data?.img : "https://images.unsplash.com/photo-1420593248178-d88870618ca0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Z3JlZW4lMjBmb3Jlc3R8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"}
                 style={{
                   width: "100%",
                   height: "100%",
@@ -160,7 +166,7 @@ const SingleCampaign = () => {
                       <Group align="center" spacing={6}>
                         <Text>Target:</Text>
                         <IconCoin />
-                        <Text size="xs" >{data?.target} {tokenDetails?.symbol === "any" ? "USD" : tokenDetails?.symbol}</Text>
+                        <Text size="xs" >{data?.target} {tokenDetails?.symbol}</Text>
                       </Group>
                     </Tooltip>
                   </Grid.Col>
@@ -219,7 +225,7 @@ const SingleCampaign = () => {
                 <TextInput value={amt}
                   onChange={e => setAmt(e.target.value)}
                   radius="lg"
-                  placeholder={`Amt in ${data?.token === "any" ? selectedToken?.symbol : tokenDetails?.symbol}`}
+                  placeholder={`Amt in ${tokenDetails?.symbol ?? "ETH"}`}
                   label={<Text className={classes.text} mb="xs">Enter Amount to Donate</Text>} size="md"
                   sx={{ overflow: "hidden" }}
                   icon={<Avatar size="sm" src={tokenDetails?.icon} sx={{
@@ -234,7 +240,7 @@ const SingleCampaign = () => {
 
                     textTransform: "capitalize"
                   }}>{tokenDetails?.symbol?.substring(0, 1)}</Avatar>} />
-                <Text size="xs" align="center">This event is set to receive <b>{tokenDetails?.symbol}</b> Tokens</Text>
+                <Text size="xs" align="center">This event is set to receive <b>{tokenDetails?.symbol ?? "ETH"}</b> Tokens</Text>
                 {
                   !isSignedIn ? <Button radius="xl" fullWidth px="xl" color="purple" onClick={connectWallet}>Connect wallet</Button>
                     :
@@ -256,9 +262,10 @@ const SingleCampaign = () => {
                   </Avatar>
                 </Center>
                 <Text className={classes.text} align="center" weight={600}>
-                  {data?.token === "any" ? data?.current_usd : getReadableTokenBalance(data?.current, tokenDetails?.decimals)}
+                  {data?.total?.toString()}
+                  {getReadableTokenBalance(data?.total?.toString(), tokenDetails?.decimals ?? 18)}
                   &nbsp;
-                  {data?.token === "any" ? "USD" : tokenDetails?.symbol}
+                  {tokenDetails?.symbol}
                 </Text>
               </Stack>
             </Paper>
@@ -322,7 +329,7 @@ const SingleCampaign = () => {
               <Text size="xs" className={classes.text} align="end">Approximately: {data?.current_usd} USD </Text>
             </Stack>
           </Group>
-          <CampaignDonations category="events" id={eid} />
+          <CampaignDonations category="events" id={cid} />
         </Paper>
         <Paper radius="lg" p="xs" my="xl">
           <Group align="center" position='apart'>
@@ -381,7 +388,7 @@ const SingleCampaign = () => {
               </tbody>
             </Table>
           </ScrollArea>
-          <BecomePartnerModal partners_={partners} method="add_event_partner" id={eid} />
+          <BecomePartnerModal partners_={partners} method="add_event_partner" id={cid} />
         </Paper>
       </Container>
     </>

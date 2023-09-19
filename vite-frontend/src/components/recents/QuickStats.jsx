@@ -1,7 +1,6 @@
 import { Box, Container, Grid, Card, Stack, Title, Image, Text } from '@mantine/core'
 import React, { useEffect, useState } from 'react';
 import { getTheme } from '../../configs/appfunctions'
-import { theme } from '../../ThemeProvider'
 import bodyStyles from '../styles/bodyStyles';
 import { contract } from '../../utils/config';
 
@@ -10,11 +9,9 @@ const QuickStats = () => {
     const { classes, theme } = bodyStyles()
 
     const getStats = () => {
-        contract?.methods?.getDonationsStats().call((error, result) => {
-            console.error("Error: ", error)
-            console.info("Result: ", result)
+        contract?.methods?.getDonationsStats().call().then(res => {
+            setStats(res)
         }).catch(e => {
-            console.log("Error: ", e)
         })
     }
 
@@ -42,7 +39,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/deal.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} size="xl">Partners</Text>
-                                    <Title className={classes.subtitle} order={2}>{stats?.partners ?? 0}</Title>
+                                    <Title className={classes.subtitle} order={2}>{stats?.partners?.toString() ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>
@@ -53,7 +50,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/box.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} size="xl">Causes</Text>
-                                    <Title className={classes.subtitle} order={2}>{stats?.causes ?? 0}</Title>
+                                    <Title className={classes.subtitle} order={2}>{stats?.causes?.toString() ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>
@@ -64,7 +61,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/tokens.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} size="xl">Tokens</Text>
-                                    <Title className={classes.subtitle} order={2}>{stats?.tokens ?? 0}</Title>
+                                    <Title className={classes.subtitle} order={2}>{stats?.tokens?.toString() ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>
@@ -79,7 +76,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/donation.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} sx={{ color: "white" }} size="xl">Donations</Text>
-                                    <Title className={classes.subtitle} sx={{ color: "white" }} order={2}>$ {stats?.total_usd ?? 0}</Title>
+                                    <Title className={classes.subtitle} sx={{ color: "white" }} order={2}>$ {stats?.total_usd?.toString() ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>
@@ -90,7 +87,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/planner.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} size="xl">Events</Text>
-                                    <Title className={classes.subtitle} order={2}>{stats?.events ?? 0}</Title>
+                                    <Title className={classes.subtitle} order={2}>{stats?.events?.toString() ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>
@@ -101,7 +98,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/group.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} size="xl">Campaigns</Text>
-                                    <Title className={classes.subtitle} order={2}>{stats?.campaigns ?? 0}</Title>
+                                    <Title className={classes.subtitle} order={2}>{stats?.campaigns?.toString() ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>

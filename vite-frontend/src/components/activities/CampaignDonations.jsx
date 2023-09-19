@@ -5,7 +5,7 @@ const CampaignDonations = (props) => {
 
     const { category, id } = props
 
-    const [donations, setDonations] = useState<null | any>([])
+    const [donations, setDonations] = useState([])
     const [count, setCount] = useState(0)
     const [limit, setLimit] = useState(10)
     const [page, setPage] = useState(1)

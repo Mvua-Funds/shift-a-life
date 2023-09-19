@@ -49,7 +49,7 @@ const ConnectionButton = () => {
         isConnected()
     }, [])
     return (
-        <Button radius="xl" px="xl" color="indigo" onClick={connectedAccount ? disconnectWallet : connectWallet}>{connectedAccount ? limitChars(connectedAccount, 10) : "Disconnect Wallet"}</Button>
+        <Button radius="xl" px="xl" color="indigo" onClick={connectedAccount ? disconnectWallet : connectWallet}>{connectedAccount ? limitChars(connectedAccount, 10) : "Connect Wallet"}</Button>
     )
 }
 

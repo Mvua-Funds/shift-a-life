@@ -1,7 +1,7 @@
 import Web3 from "web3";
 
-const CONTRACT_ADDRESS = "0x437F0156F64881067066b7D69aAf7e5c3dE395Dd"
-const web3 = new Web3(window.ethereum);
+const CONTRACT_ADDRESS = "0x5C5724e8fCEC5856f16de15c6de566E5517654aD"
+const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
 
 const abi = [
   {

@@ -2,17 +2,20 @@ import { Paper, Box, Stack, Title, Badge, Button, Group, Text, Anchor, Tooltip }
 import { IconCashBanknote, IconCalendar } from '@tabler/icons'
 import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { getTimezone } from '../../configs/appfunctions'
+import { createObject, getReadableTokenBalance, getTimezone } from '../../configs/appfunctions'
 import bodyStyles from '../styles/bodyStyles'
+import { campaign_keys } from '../../configs/appconfig'
 
 const CampaignCard = (props) => {
     const { details } = props;
     const { theme, classes } = bodyStyles()
 
-    const [tokenDetails, setTokenDetails] = useState<null | any>(null)
+    const [tokenDetails, setTokenDetails] = useState(null)
+
+    const data = createObject(campaign_keys, details)
 
     const getTokenMetadata = () => {
-        
+
     }
 
     useEffect(() => {
@@ -22,6 +25,7 @@ const CampaignCard = (props) => {
     return (
         <Paper radius="lg" sx={{
             overflow: "hidden !important",
+            border: "none"
         }}>
 
             <Box sx={{
@@ -29,7 +33,7 @@ const CampaignCard = (props) => {
                 position: "relative",
                 // borderRadius: theme.radius.lg,
             }}>
-                <img loading='lazy' src={details?.img !== "someimageurl" ? details?.img : "https://images.unsplash.com/photo-1420593248178-d88870618ca0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Z3JlZW4lMjBmb3Jlc3R8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"}
+                <img loading='lazy' src={data?.img ? data?.img : "https://images.unsplash.com/photo-1420593248178-d88870618ca0?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8Z3JlZW4lMjBmb3Jlc3R8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60"}
                     style={{
                         width: "100%",
                         height: "100%",
@@ -50,22 +54,22 @@ const CampaignCard = (props) => {
 
                 }}>
                     <Stack className='w-100' spacing={10}>
-                        <Title order={2} color="white" sx={{ textTransform: "capitalize" }} align="center">{details?.title}</Title>
-                        <Badge sx={{ width: "fit-content" }} mx="auto" variant='light'>Target: {details?.token === "any" ? details?.currenct_usd : getReadableTokenBalance(details?.current, tokenDetails?.decimals)} / {details?.target} {details?.token === "any" ? "USD" : tokenDetails?.symbol}</Badge>
-                        <Anchor to={`/campaigns/${details?.id}`} component={Link} mx="auto">
+                        <Title order={2} color="white" sx={{ textTransform: "capitalize" }} align="center">{data?.title}</Title>
+                        <Badge sx={{ width: "fit-content" }} mx="auto" variant='light'>Target: {getReadableTokenBalance(data?.total, tokenDetails?.decimals ?? 18)} / {data?.target?.toString()}  {tokenDetails?.symbol}</Badge>
+                        <Anchor to={`/campaigns/${data?.id}`} component={Link} mx="auto">
                             <Button sx={{ width: "fit-content" }} radius="xl" px="xl" color="indigo" leftIcon={<IconCashBanknote />}>Donate</Button>
                         </Anchor>
                         <Group position='apart' align="center" spacing={0}>
-                            <Tooltip label={getTimezone(details.start_date)} color="lime" withArrow>
+                            <Tooltip label={getTimezone(data.start_date)} color="lime" withArrow>
                                 <Group align="center" spacing={2}>
                                     <IconCalendar color="white" />
-                                    <Text size="xs" color="white">{new Date(details?.start_date).toDateString()}</Text>
+                                    <Text size="xs" color="white">{new Date(data?.start_date).toDateString()}</Text>
                                 </Group>
                             </Tooltip>
-                            <Tooltip label={getTimezone(details.end_date)} color="lime" withArrow>
+                            <Tooltip label={getTimezone(data.end_date)} color="lime" withArrow>
                                 <Group align="center" spacing={2}>
                                     <IconCalendar color="white" />
-                                    <Text size="xs" color="white">{new Date(details?.end_date).toDateString()}</Text>
+                                    <Text size="xs" color="white">{new Date(data?.end_date).toDateString()}</Text>
                                 </Group>
                             </Tooltip>
                         </Group>
