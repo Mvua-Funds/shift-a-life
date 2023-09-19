@@ -13,7 +13,7 @@ import { contract } from '../../utils/config';
 
 const Campaigns = () => {
 
-  const [campaigns, setCampaigns] = useState<null | any>([])
+  const [campaigns, setCampaigns] = useState([])
   const [count, setCount] = useState(0)
   const [limit, setLimit] = useState(8)
   const [page, setPage] = useState(1)

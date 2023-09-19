@@ -10,9 +10,11 @@ const QuickStats = () => {
     const { classes, theme } = bodyStyles()
 
     const getStats = () => {
-        contract.methods.getStats().call((error, result) => {
+        contract?.methods?.getDonationsStats().call((error, result) => {
             console.error("Error: ", error)
             console.info("Result: ", result)
+        }).catch(e => {
+            console.log("Error: ", e)
         })
     }
 
@@ -40,7 +42,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/deal.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} size="xl">Partners</Text>
-                                    <Title className={classes.subtitle} order={2}>{stats?.partners}</Title>
+                                    <Title className={classes.subtitle} order={2}>{stats?.partners ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>
@@ -51,7 +53,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/box.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} size="xl">Causes</Text>
-                                    <Title className={classes.subtitle} order={2}>{stats?.causes}</Title>
+                                    <Title className={classes.subtitle} order={2}>{stats?.causes ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>
@@ -62,7 +64,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/tokens.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} size="xl">Tokens</Text>
-                                    <Title className={classes.subtitle} order={2}>{stats?.tokens}</Title>
+                                    <Title className={classes.subtitle} order={2}>{stats?.tokens ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>
@@ -77,7 +79,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/donation.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} sx={{ color: "white" }} size="xl">Donations</Text>
-                                    <Title className={classes.subtitle} sx={{ color: "white" }} order={2}>$ {stats?.total_usd}</Title>
+                                    <Title className={classes.subtitle} sx={{ color: "white" }} order={2}>$ {stats?.total_usd ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>
@@ -88,7 +90,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/planner.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} size="xl">Events</Text>
-                                    <Title className={classes.subtitle} order={2}>{stats?.events}</Title>
+                                    <Title className={classes.subtitle} order={2}>{stats?.events ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>
@@ -99,7 +101,7 @@ const QuickStats = () => {
                                 <Stack align="center" spacing={0}>
                                     <Image src="/imgs/group.png" width="100px" mx="auto" sx={{ aspectRatio: "16 / 9", maxHeight: "100px" }} />
                                     <Text className={classes.text} size="xl">Campaigns</Text>
-                                    <Title className={classes.subtitle} order={2}>{stats?.campaigns}</Title>
+                                    <Title className={classes.subtitle} order={2}>{stats?.campaigns ?? 0}</Title>
                                 </Stack>
                             </Card>
                         </Grid.Col>

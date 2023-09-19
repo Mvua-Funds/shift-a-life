@@ -14,8 +14,17 @@ export const getTimezone = (date) => {
 }
 
 export const limitText = (text, limit) => {
+    let txt = ""
     if (text.length >= limit) {
-        return text.substring(0, limit)
+        txt = text.substring(0, limit)
     }
-    return text
+    txt = text
+    return txt
+}
+
+export const limitChars = (word, limit) => {
+    if (word?.length <= limit) {
+        return word;
+    }
+    return word?.substring(0, limit) + "...";
 }

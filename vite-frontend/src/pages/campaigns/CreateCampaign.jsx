@@ -22,18 +22,18 @@ import { useNavigate } from 'react-router-dom';
 const CreateCampaign = () => {
 
   const [loading, setLoading] = useState(false)
-  const [causes, setCauses] = useState<null | any>([])
+  const [causes, setCauses] = useState([])
   const [openModal, setOpenModal] = useState(false)
   const [selectedToken, setSelectedToken] = useState(null)
 
   const [uploading, setUploading] = useState(false)
-  const [img, setImg] = useState<any>(null)
+  const [img, setImg] = useState(null)
 
   const theme = useMantineTheme()
   const navigate = useNavigate()
 
   const loadCauses = () => {
-   
+
   }
 
   const form = useForm({
@@ -83,10 +83,14 @@ const CreateCampaign = () => {
       end_date: form.values.end_date?.toLocaleDateString(),
     }
 
-    // await contract?.methods?.createCampaign(data?.title, data?.token, data?.target.toString(), data?.cause,
-    //   data?.description, data?.image, data?.start_date,
-    //   data?.end_date)
-    //   .send({ from: account }).then((data: any) => console.log(data)).catch((e: any) => console.log(e))
+    await contract?.methods?.createCampaign(data?.title, data?.token, data?.target.toString(), data?.cause,
+      data?.description, data?.image, data?.start_date,
+      data?.end_date)
+      .send({ from: account }).then((data) => {
+        console.info("Result", data)
+      }).catch((e) => {
+        console.error("Error: ", e)
+      })
 
   }
 

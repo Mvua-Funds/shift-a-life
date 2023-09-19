@@ -9,7 +9,7 @@ const footerLinks = [
     { to: "/partners", label: "Partners" },
     { to: "/partners/become-partner", label: "Become Partner" },
     { to: "/create/campaign", label: "Create Campaign" },
-    { to: "/create/event", label: "Create Event" },
+    { to: "/create/cause", label: "Register Cause" },
     { to: "/import", label: "Import Token" },
 ]
 

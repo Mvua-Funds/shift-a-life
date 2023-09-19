@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
     AppShell,
     Header,
@@ -16,13 +16,12 @@ import {
     Text,
 } from '@mantine/core';
 import CustomLinkComponent from '../components/common/CustomNavlink';
-import { getTheme } from '../configs/appfunctions';
+import { getTheme, limitChars, limitText } from '../configs/appfunctions';
 import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
-import CreateDropdown from '../components/common/CreateDropdown';
 import Footer from '../components/common/Footer';
 import { APP_NAME } from '../configs/appconfig';
 import { Link } from 'react-router-dom';
-import { connectWallet } from '../utils/config';
+import { connectWallet, disconnectWallet } from '../utils/config';
 import React from 'react';
 
 const navlinks = [
@@ -33,6 +32,28 @@ const navlinks = [
 ]
 
 // Text color for light mode: #1f1f30
+
+
+const ConnectionButton = () => {
+
+    const [connectedAccount, setConnectedAccount] = useState(null)
+
+    async function isConnected() {
+        const accounts = await ethereum.request({ method: 'eth_accounts' });
+        if (accounts?.length > 0) {
+            setConnectedAccount(accounts[0])
+        }
+    }
+
+    useEffect(() => {
+        isConnected()
+    }, [])
+    return (
+        <Button radius="xl" px="xl" color="indigo" onClick={connectedAccount ? disconnectWallet : connectWallet}>{connectedAccount ? limitChars(connectedAccount, 10) : "Disconnect Wallet"}</Button>
+    )
+}
+
+
 
 export default function AppWrapper(props) {
     const theme = useMantineTheme();
@@ -88,7 +109,7 @@ export default function AppWrapper(props) {
                         <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
                             <Group spacing={2}>
                                 {
-                                    navlinks.map((l: any, i: any) => (
+                                    navlinks.map((l, i) => (
                                         <CustomLinkComponent key={`navlink_${i}`} details={l} />
                                     ))
                                 }
@@ -97,7 +118,7 @@ export default function AppWrapper(props) {
 
                         <MediaQuery smallerThan="md" styles={{ display: 'none' }}>
                             <Group>
-                                <Button radius="xl" px="xl" color="indigo" >{isSignedIn ? "Disconnect wallet" : "Connect wallet"}</Button>
+                                <ConnectionButton />
                                 <ColorSchemeToggle />
                             </Group>
                         </MediaQuery>
@@ -113,7 +134,7 @@ export default function AppWrapper(props) {
                 size="md"
             >
                 {
-                    navlinks.map((l: any, i: any) => (
+                    navlinks.map((l, i) => (
                         <CustomLinkComponent key={`navlink_${i}`} details={l} />
                     ))
                 }

@@ -12,12 +12,13 @@ import Partners from './pages/partners/Partners';
 import BecomePartner from "./pages/partners/BecomePartner";
 import TokenImport from "./pages/TokenImport";
 import SingleCampaign from "./pages/campaigns/SingleCampaign";
+import CreateCause from "./pages/campaigns/CreateCause";
 
 export default function App() {
 
   return (
     <BrowserRouter>
-    hi
+      hi
       <ThemeProvider>
         <AppWrapper>
           <Routes>
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="/campaigns" element={<Campaigns />} />
             <Route path="/campaigns/:cid" element={<SingleCampaign />} />
             <Route path="/create/campaign" element={<CreateCampaign />} />
+            <Route path="/create/cause" element={<CreateCause />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/partners/become-partner" element={<BecomePartner />} />
             <Route path="*" element={<PageNotFound />} />

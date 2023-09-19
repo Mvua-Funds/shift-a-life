@@ -1,4 +1,4 @@
-import { Web3, Contract } from 'web3';
+import Web3 from "web3";
 
 const CONTRACT_ADDRESS = "0x437F0156F64881067066b7D69aAf7e5c3dE395Dd"
 const web3 = new Web3(window.ethereum);
@@ -573,30 +573,13 @@ const abi = [
   }
 ]
 
-export const contract = new Contract(abi, CONTRACT_ADDRESS);
+export const contract = new web3.eth.Contract(abi, CONTRACT_ADDRESS);
 
 export async function connectWallet() {
   const accounts = await window?.ethereum?.request({ method: "eth_requestAccounts" });
   const account = accounts[0];
 }
 
-
-// async function initialize() {
-//   try {
-//     // Request account access from the user
-//     const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-//     console.log('Connected Ethereum accounts:', accounts);
-
-//     // Create a contract instance
-//     const contract = new web3.eth.Contract(abi, CONTRACT_ADDRESS);
-
-//     // Now you can interact with the contract
-//     // For example: contract.methods.myMethod().call()
-
-//   } catch (error) {
-//     console.error('Error:', error);
-//   }
-// }
-
-// // Call the initialize function to start the interaction
-// export default initialize()
+export function disconnectWallet() {
+  console.log(window.ethereum)
+}
