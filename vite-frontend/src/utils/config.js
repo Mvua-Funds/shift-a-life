@@ -1,7 +1,7 @@
 import Web3 from "web3";
 
-const CONTRACT_ADDRESS = "0xA59780f2fF8431f5B31B971F0086c0c11Ec6c57a"
-const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
+const CONTRACT_ADDRESS = "0xC24A03e2B6eA452B028AD9F14789C8426B929920"
+const web3 = new Web3(new Web3.providers.HttpProvider("https://eth-sepolia.g.alchemy.com"));
 
 const abi = [
   {
