@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import CampaignCard from '../activities/CampaignCard'
 import bodyStyles from '../styles/bodyStyles'
+import { contract } from '../../utils/config'
 
 const RecentCampaigns = () => {
     const [campaigns, setCampaigns] = useState([])
@@ -11,8 +12,12 @@ const RecentCampaigns = () => {
     const { theme, classes } = bodyStyles()
 
     const getCampaigns = () => {
-    }
-
+        contract?.methods?.getCampaigns(1).call().then((res) => {
+          setCampaigns(res)
+        }).catch((err) => {
+          console.error("Error: ", err)
+        })
+      }
 
     useEffect(() => {
         getCampaigns()
@@ -29,7 +34,7 @@ const RecentCampaigns = () => {
                 </Group>
                 <Grid>
                     {
-                        campaigns.map((c, i) => (
+                        campaigns.slice(2, 5).map((c, i) => (
                             <Grid.Col md={4} key={`ds_campaign_${c.id}`}>
                                 <CampaignCard details={c} />
                             </Grid.Col>

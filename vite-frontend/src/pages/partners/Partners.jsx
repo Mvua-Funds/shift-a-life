@@ -5,10 +5,11 @@ import bodyStyles from '../../components/styles/bodyStyles';
 import { Anchor } from '@mantine/core';
 import { Link } from 'react-router-dom';
 import { useScrollIntoView } from '@mantine/hooks';
+import { contract } from '../../utils/config';
 
 const Partners = () => {
 
-  const [partners, setPartners] = useState<null | any>([])
+  const [partners, setPartners] = useState([])
   const [count, setCount] = useState(0)
   const [limit, setLimit] = useState(15)
   const [page, setPage] = useState(1)
@@ -16,10 +17,14 @@ const Partners = () => {
   const no_of_pages = Math.ceil(count / limit)
 
   const { theme, classes } = bodyStyles()
-  const { scrollIntoView, targetRef } = useScrollIntoView<HTMLDivElement>({ offset: 120 });
+  const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 120 });
 
-  const getCampaigns = () => {
-    
+  const getPartners = () => {
+    contract?.methods?.getCampaigns(1).call().then((res) => {
+      setCampaigns(res)
+    }).catch((err) => {
+      console.error("Error: ", err)
+    })
   }
 
   const wait = useMemo(() => {
@@ -29,7 +34,7 @@ const Partners = () => {
   }, [page])
 
   useEffect(() => {
-    getCampaigns()
+    getPartners()
   }, [wait])
 
   return (

@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Calendar } from '@mantine/dates';
-import { ActionIcon, Anchor, Group, Indicator, Modal, Paper, Stack, Text, Title, useMantineTheme } from '@mantine/core';
+import { ActionIcon, Anchor, Group, Indicator, Modal, Paper, Stack, Text, Title } from '@mantine/core';
 import { getTheme } from '../../configs/appfunctions';
-import { IconChevronRight, IconSpeakerphone, IconCalendar } from '@tabler/icons';
+import { IconChevronRight, IconCalendar } from '@tabler/icons';
 import bodyStyles from '../styles/bodyStyles';
 import { Link } from 'react-router-dom';
 import React from 'react';

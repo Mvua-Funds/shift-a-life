@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { ScrollArea, Table, Group, Avatar, Stack, Text, Pagination } from '@mantine/core'
+import { ScrollArea, Table, Group, Text, Pagination } from '@mantine/core'
+import { contract } from '../../utils/config'
+import { createObject, getReadableTokenBalance, limitChars } from '../../configs/appfunctions'
+
+const donationKeys = ['campaignId', 'donor', 'amount', 'date']
 
 const CampaignDonations = (props) => {
 
@@ -13,7 +17,12 @@ const CampaignDonations = (props) => {
     const no_of_pages = Math.ceil(count / limit)
 
     const loadDonations = () => {
-        
+        contract?.methods.getCampaignDonations(id, 1).call().then(res => {
+            const donations_ = res?.map(donation => createObject(donationKeys, donation))
+            setDonations(donations_)
+        }).catch(e => {
+            console.log(e)
+        })
     }
 
     useEffect(() => {
@@ -37,42 +46,24 @@ const CampaignDonations = (props) => {
                     </thead>
                     <tbody>
                         {
-                            donations.map((don, i) => (
-                                <tr key={`donation_${don?.donation?.id}`}>
-                                    <td>{don?.donation?.donor}</td>
+                            donations?.map((don, i) => (
+                                <tr key={`donation_${i}`}>
+                                    <td>{limitChars(don?.donor, 20)}</td>
                                     <td>
-                                        {
-                                            don?.donation?.token === "near" ? (
-                                                <Group>
-                                                    <Avatar size="sm" />
-                                                    <Stack spacing={-2}>
-                                                        <Text size="sm" weight={600}>Near</Text>
-                                                        <Text size="xs">Near</Text>
-                                                    </Stack>
-                                                </Group>
-                                            ) : (
-                                                <Group>
-                                                    <Avatar src={don?.tokenmetadata?.icon} size="sm" />
-                                                    <Stack spacing={-2}>
-                                                        <Text size="sm" weight={600}>{don?.tokenmetadata?.name}</Text>
-                                                        <Text size="xs">{don?.tokenmetadata?.symbol}</Text>
-                                                    </Stack>
-                                                </Group>
-                                            )
-                                        }
+                                        ETH
                                     </td>
                                     <td>
                                         {
-                                            don.donation.token === "near" ? getReadableTokenBalance(don?.donation?.amount, 24) : getReadableTokenBalance(don?.donation?.amount, don?.tokenmetadata?.decimals)
+                                            getReadableTokenBalance(don?.amount, 18)
                                         }
                                     </td>
                                     <td>
                                         <Group position='apart'>
                                             <Text size="sm">$</Text>
-                                            <Text size="sm">{don.donation.amount_usd}</Text>
+                                            <Text size="sm">{getReadableTokenBalance(don?.amount, 18)}</Text>
                                         </Group>
                                     </td>
-                                    <td>{convertTimestamp(don.donation.created_at)}</td>
+                                    <td>{new Date(don?.date).toDateString()}</td>
                                 </tr>
                             ))
                         }

@@ -2,7 +2,7 @@ import React from 'react'
 import { Container, Grid, Select, Stack, TextInput, Title, useMantineTheme, Paper, Textarea, Group, Button, LoadingOverlay } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 
-import { IconAlertCircle, IconAlertTriangle, IconSpeakerphone, IconTriangle } from '@tabler/icons';
+import { IconAlertCircle, IconAlertTriangle, IconSpeakerphone } from '@tabler/icons';
 import { Helmet } from 'react-helmet';
 import { SEPARATOR, APP_NAME } from '../../configs/appconfig';
 import { useForm } from '@mantine/form';
@@ -18,6 +18,7 @@ import { storage } from '../../firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useNavigate } from 'react-router-dom';
 import { showNotification } from '@mantine/notifications';
+import Web3 from 'web3';
 
 
 const CreateCampaign = () => {
@@ -85,10 +86,10 @@ const CreateCampaign = () => {
       start_date: form.values.start_date?.toLocaleDateString(),
       end_date: form.values.end_date?.toLocaleDateString(),
     }
-    console.log(data)
     setLoading(true)
+    const amount = Web3.utils.toWei(data?.target, 'ether')
     contract?.methods?.createCampaign(
-      data?.title, data?.token, data?.target.toString(), data?.cause,
+      data?.title, data?.token, amount, data?.cause,
       data?.description, data?.image, data?.start_date,
       data?.end_date)
       .send({ from: account, gas: 2000000 }).then((data) => {
@@ -167,6 +168,12 @@ const CreateCampaign = () => {
 
                   <Grid>
                     <Grid.Col md={6}>
+                      <TextInput label="Image" placeholder="Campaign Image" radius="md"  {...form.getInputProps('image')} />
+                    </Grid.Col>
+                    <Grid.Col md={6}>
+                      <TextInput label="Target amount" placeholder="Target amount for the campaign" radius="md"  {...form.getInputProps('target')} />
+                    </Grid.Col>
+                    <Grid.Col md={6}>
                       {/* <Paper radius="md" sx={{
                         background: getTheme(theme) ? theme.colors.dark[5] : theme.colors.gray[1],
                         padding: "4px"
@@ -193,9 +200,6 @@ const CreateCampaign = () => {
                           </ActionIcon>
                         </Group>
                       </Paper> */}
-                    </Grid.Col>
-                    <Grid.Col md={6}>
-                      <TextInput label="Target amount" placeholder="Target amount for the campaign" radius="md"  {...form.getInputProps('target')} />
                     </Grid.Col>
                     {/* <Grid.Col>
                       <FileInput accept="image/png,image/jpeg, image/jpg, image/webp" label="Campaing Image" placeholder='Select banner' {...form.getInputProps('image')} />

@@ -1,9 +1,7 @@
-import { Center, Stack, SegmentedControl, Group, Paper, Text, useMantineTheme } from '@mantine/core'
-import { IconCalendarEvent, IconSpeakerphone } from '@tabler/icons'
+import { Center, Stack, SegmentedControl, Group, Paper, Text } from '@mantine/core'
+import { IconSpeakerphone } from '@tabler/icons'
 import React from 'react'
-import { useState } from 'react';
 import CampaignsCustomCalendar from './CampaignsCustomCalendar';
-import EventsCustomCalendar from './EventsCustomCalendar';
 
 const HomeBannerCalendar = () => {
     return (

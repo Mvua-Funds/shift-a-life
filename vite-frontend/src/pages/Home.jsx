@@ -204,10 +204,6 @@ const Home = () => {
                 <RecentCampaigns />
             </Container>
 
-            {/* Recent events */}
-            <Container size="lg" className='custom-mb'>
-                <RecentEvents />
-            </Container>
             {/* Why use the blockchain */}
             <Container size="lg" className='custom-mb'>
                 <Stack>

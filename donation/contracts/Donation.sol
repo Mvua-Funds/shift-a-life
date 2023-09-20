@@ -41,6 +41,10 @@ struct Campaign {
 struct ReturnCampaign {
     uint256 id;
     string title;
+    string cause;
+    string description;
+    string image;
+    string start_date;
     address donation_token;
     uint256 total;
     uint256 donations_count;
@@ -50,6 +54,7 @@ struct ReturnCampaign {
 struct Partner {
     string id;
     string name;
+    string logo;
     string expertise_fields;
     address wallet;
 }
@@ -113,15 +118,31 @@ contract Contract {
         return stats;
     }
 
-    function registerPartner(string memory id, string memory name, string memory expertise_fields, address wallet) public {
-        Partner memory partner = Partner (id, name, expertise_fields, wallet);
+    function registerPartner(
+        string memory id,
+        string memory name,
+        string memory logo,
+        string memory expertise_fields,
+        address wallet
+    ) public {
+        Partner memory partner = Partner(
+            id,
+            name,
+            logo,
+            expertise_fields,
+            wallet
+        );
         partners[id] = partner;
         account_partners[msg.sender].push(id);
         partners_count += 1;
     }
 
-    function getAccountPartners()public view returns (string[] memory){
+    function getAccountPartners() public view returns (string[] memory) {
         return account_partners[msg.sender];
+    }
+
+    function getPartner(string memory id) public view returns (Partner memory) {
+        return partners[id];
     }
 
     function createCampaign(
@@ -134,7 +155,7 @@ contract Contract {
         string memory start_date,
         string memory end_date
     ) public {
-        campaigns_count++;
+        campaigns_count += 1;
         Campaign storage newCampaign = campaigns[campaigns_count];
         newCampaign.id = campaigns_count;
         newCampaign.title = title;
@@ -168,6 +189,10 @@ contract Contract {
         ReturnCampaign memory return_camp = ReturnCampaign(
             camp.id,
             camp.title,
+            camp.cause,
+            camp.description,
+            camp.image,
+            camp.start_date,
             camp.donation_token,
             camp.total,
             camp.donations_count,
@@ -180,11 +205,11 @@ contract Contract {
         uint256 campaignId,
         uint256 amount,
         string memory date
-    ) public {
-        require(
-            campaigns[campaignId].donation_token == msg.sender,
-            "Invalid donation token"
-        );
+    ) external payable {
+        // require(
+        //     campaigns[campaignId].donation_token == msg.sender,
+        //     "Invalid donation token"
+        // );
 
         Donation memory newDonation = Donation(
             campaignId,
@@ -199,23 +224,16 @@ contract Contract {
 
         campaigns[campaignId].voters_addresses.push(msg.sender);
         campaigns[campaignId].voters[msg.sender] = true;
-
     }
 
-	function registerCampaignPartner(uint256 campaignId, string memory partner_id)public{
-		Campaign storage campaign = campaigns[campaignId];
-		campaign.partner_ids.push(partner_id);
+    function registerCampaignPartner(
+        uint256 campaignId,
+        string memory partner_id
+    ) public {
+        Campaign storage campaign = campaigns[campaignId];
+        campaign.partner_ids.push(partner_id);
         campaign.partner_votes[partner_id] = 0;
-	}
-
-    function vote(uint256 campaignId, string memory partner_id)public{
-		Campaign storage campaign = campaigns[campaignId];
-		bool voter = campaign.voters[msg.sender];
-        if (voter){
-            campaign.partner_votes[partner_id] += 1;
-            delete campaign.voters[msg.sender];
-        }
-	}
+    }
 
     function getCampaignDonations(
         uint256 campaignId,
@@ -263,14 +281,18 @@ contract Contract {
             // result[i - start] = campaignDonations[campaignId][i];
             Campaign storage camp = campaigns[i];
             ReturnCampaign memory return_camp = ReturnCampaign(
-            camp.id,
-            camp.title,
-            camp.donation_token,
-            camp.total,
-            camp.donations_count,
-            camp.target
-        );
-            result [i-start] = return_camp;
+                camp.id,
+                camp.title,
+                camp.cause,
+                camp.description,
+                camp.image,
+                camp.start_date,
+                camp.donation_token,
+                camp.total,
+                camp.donations_count,
+                camp.target
+            );
+            result[i - start] = return_camp;
         }
 
         return result;
@@ -282,6 +304,21 @@ contract Contract {
         require(campaignId <= campaigns_count, "Invalid campaign ID");
         Campaign storage campaign = campaigns[campaignId];
         return campaign.voters_addresses;
+    }
+
+    function getCampaignVoter(uint256 campaignId) public view returns (bool) {
+        require(campaignId <= campaigns_count, "Invalid campaign ID");
+        Campaign storage campaign = campaigns[campaignId];
+        return campaign.voters[msg.sender];
+    }
+
+    function vote(uint256 campaignId, string memory partner_id) public {
+        Campaign storage campaign = campaigns[campaignId];
+        bool voter = campaign.voters[msg.sender];
+        if (voter) {
+            campaign.partner_votes[partner_id] += 1;
+            delete campaign.voters[msg.sender];
+        }
     }
 
     function getCampaignPartners(
@@ -299,5 +336,4 @@ contract Contract {
         }
         return (campaign.partner_ids, partnerVotes);
     }
-
 }

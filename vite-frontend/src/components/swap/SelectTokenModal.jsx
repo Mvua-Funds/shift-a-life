@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 
 import { getTheme } from "./../../config/functions"
 
-import { Modal, Box, Group, Title, TextInput, Paper, Avatar, Stack, Text, ScrollArea, Pagination } from "@mantine/core"
+import { Modal, Group, Title, TextInput, Paper, Avatar, Stack, Text, ScrollArea, Pagination } from "@mantine/core"
 
 
 import { Carousel } from "@mantine/carousel"

@@ -1,6 +1,6 @@
 import Web3 from "web3";
 
-const CONTRACT_ADDRESS = "0x5C5724e8fCEC5856f16de15c6de566E5517654aD"
+const CONTRACT_ADDRESS = "0xA59780f2fF8431f5B31B971F0086c0c11Ec6c57a"
 const web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:7545"));
 
 const abi = [
@@ -240,6 +240,11 @@ const abi = [
       },
       {
         "internalType": "string",
+        "name": "logo",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
         "name": "expertise_fields",
         "type": "string"
       },
@@ -262,6 +267,53 @@ const abi = [
         "internalType": "string[]",
         "name": "",
         "type": "string[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "id",
+        "type": "string"
+      }
+    ],
+    "name": "getPartner",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "id",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "logo",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "expertise_fields",
+            "type": "string"
+          },
+          {
+            "internalType": "address",
+            "name": "wallet",
+            "type": "address"
+          }
+        ],
+        "internalType": "struct Partner",
+        "name": "",
+        "type": "tuple"
       }
     ],
     "stateMutability": "view",
@@ -339,6 +391,26 @@ const abi = [
             "type": "string"
           },
           {
+            "internalType": "string",
+            "name": "cause",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "image",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "start_date",
+            "type": "string"
+          },
+          {
             "internalType": "address",
             "name": "donation_token",
             "type": "address"
@@ -388,8 +460,9 @@ const abi = [
     ],
     "name": "donate",
     "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
+    "stateMutability": "payable",
+    "type": "function",
+    "payable": true
   },
   {
     "inputs": [
@@ -497,6 +570,26 @@ const abi = [
             "type": "string"
           },
           {
+            "internalType": "string",
+            "name": "cause",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "description",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "image",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "start_date",
+            "type": "string"
+          },
+          {
             "internalType": "address",
             "name": "donation_token",
             "type": "address"
@@ -540,6 +633,26 @@ const abi = [
         "internalType": "address[]",
         "name": "",
         "type": "address[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "campaignId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getCampaignVoter",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",

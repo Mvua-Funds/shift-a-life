@@ -24,7 +24,6 @@ const Campaigns = () => {
   const { scrollIntoView, targetRef } = useScrollIntoView({ offset: 120 });
 
   const getCampaigns = () => {
-    console.log(contract)
     contract?.methods?.getCampaigns(1).call().then((res) => {
       setCampaigns(res)
     }).catch((err) => {
@@ -101,7 +100,7 @@ const Campaigns = () => {
         <Grid my="md" ref={targetRef}>
           {
             campaigns.map((c, i) => (
-              <Grid.Col md={3} key={`ds_campaign_${c.id}`}>
+              <Grid.Col md={4} key={`ds_campaign_${c.id}`}>
                 <CampaignCard details={c} />
               </Grid.Col>
             ))

@@ -16,7 +16,7 @@ import {
     Text,
 } from '@mantine/core';
 import CustomLinkComponent from '../components/common/CustomNavlink';
-import { getTheme, limitChars, limitText } from '../configs/appfunctions';
+import { getTheme, limitChars } from '../configs/appfunctions';
 import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
 import Footer from '../components/common/Footer';
 import { APP_NAME } from '../configs/appconfig';
